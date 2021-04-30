@@ -7,7 +7,8 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import sys
-sys.path.append('<path-to-project>/djangoProjectName')import os
+sys.path.append('<path-to-project>/djangoProjectName')
+import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'djangoProjectName.settings'# If you you use django outside of manage.py context, you
 # need to explicitly setup the django
 import django
