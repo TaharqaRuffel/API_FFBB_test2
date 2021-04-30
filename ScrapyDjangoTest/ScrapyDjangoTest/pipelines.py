@@ -7,7 +7,16 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 
+# useful for handling different item types with a single interface
+from itemadapter import ItemAdapter
+from scrapy.exceptions import DropItem
+
 
 class ScrapydjangotestPipeline:
     def process_item(self, item, spider):
-        return item
+        adapter = ItemAdapter(item)
+        if adapter.get('championship'):  # if scraped data has a price
+            item.save()  # save it to database
+            return item
+        else:
+            raise DropItem(f"Missing price in {item}")
