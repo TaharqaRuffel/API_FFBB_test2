@@ -37,6 +37,11 @@ class ffbbSpiderMatchAll(scrapy.Spider):
     name = "ffbb_match_all"
     #start_urls = ['https://resultats.ffbb.com/championnat/equipe/2263.html']
 
+    def __init__(self, *args, **kwargs):
+        self.url = kwargs.get('url')
+        self.domain = kwargs.get('domain')
+        self.start_urls = [self.url]
+        self.allowed_domains = [self.domain]
 
     def parse(self, response):
 
@@ -53,7 +58,6 @@ class ffbbSpiderMatchAll(scrapy.Spider):
         headers = response.css('.titre-bloc td::text').getall()
         headersIndexes = self.getColumnsIndex(headers)
         championshipId = self.getChampionshipId(response)
-
 
 
         content = response.css(CSS_CLASS_LINE_MATCH_1)
