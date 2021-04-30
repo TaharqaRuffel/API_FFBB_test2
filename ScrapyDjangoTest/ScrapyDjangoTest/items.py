@@ -15,3 +15,16 @@ class ScrapydjangotestItem(scrapy.Item):
 class BrandsItem(DjangoItem):
    django_model = Product
    stock = scrapy.Field() # You can still add extra fields
+
+class MatchItem(DjangoItem):
+    django_model = Match
+    created = scrapy.Field
+    updated = scrapy.Field
+    championship = scrapy.Field
+    day = scrapy.Field
+    match_date = scrapy.Field
+    home = scrapy.Field
+    visitor = scrapy.Field
+    score_home = scrapy.Field
+    score_visitor = scrapy.Field
+    plan = scrapy.Field
