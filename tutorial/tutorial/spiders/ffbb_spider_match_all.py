@@ -43,7 +43,7 @@ class ffbbSpiderMatchAll(scrapy.Spider):
 
         content = response.css('#idCompetitionsSelect option')
 
-        #item = TutorialItem()
+        item = TutorialItem()
 
         for i in range(len(content)):
             next_team = self.changerRencontresResultatsEquipe(content[i].attrib['value'])
