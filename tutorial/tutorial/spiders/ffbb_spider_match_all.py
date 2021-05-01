@@ -2,6 +2,7 @@ from datetime import datetime
 import json
 import re
 import scrapy
+from tutorial.items import TutorialItem
 
 ATTR_MATCH_CHAMPIONSHIP_ID = 'ChampionnatId'
 
@@ -35,12 +36,14 @@ DEFAULT_EXT = ".html"
 
 class ffbbSpiderMatchAll(scrapy.Spider):
     name = "ffbb_match_all"
-    #start_urls = ['https://resultats.ffbb.com/championnat/equipe/2263.html']
+    start_urls = ['https://resultats.ffbb.com/championnat/equipe/2263.html']
 
 
     def parse(self, response):
 
         content = response.css('#idCompetitionsSelect option')
+
+        #item = TutorialItem()
 
         for i in range(len(content)):
             next_team = self.changerRencontresResultatsEquipe(content[i].attrib['value'])

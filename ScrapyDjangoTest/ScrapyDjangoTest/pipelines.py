@@ -15,7 +15,7 @@ from scrapy.exceptions import DropItem
 class ScrapydjangotestPipeline:
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
-        if adapter.get('championship'):  # if scraped data has a price
+        if adapter.get('championship'):  # if scraped data has a championship
             item.save()  # save it to database
             return item
         else:
