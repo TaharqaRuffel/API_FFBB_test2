@@ -67,60 +67,6 @@ class ffbbSpiderMatchAll(scrapy.Spider):
         for item in items:
             yield item
 
-        # content = response.css(CSS_CLASS_LINE_MATCH_1)
-        #
-        # for line in content:
-        #     if len(line.css(CSS_INFOS_COMPLEMENTAIRES)) == 0:
-        #
-        #         attributs = line.xpath(XPATH_TD_TEXT).getall()
-        #         gym_id = self.getGymId(line.css('.poplight').attrib["href"])
-        #
-        #         if attributs[headers_indexes[MATCH_RESULT]] != "-":
-        #             score = attributs[headers_indexes[MATCH_RESULT]].split(" - ")
-        #         else:
-        #             score = [0, 0]
-        #
-        #         item = MatchItem()
-        #         print(item.keys())
-        #
-        #         item['championship'] = championship_id
-        #         item['day'] = int(attributs[headers_indexes[MATCH_DAY_LABEL]])
-        #         item['match_date'] = datetime.strptime(
-        #             attributs[headers_indexes[MATCH_DATE_LABEL]] + ' ' + attributs[
-        #                 headers_indexes[MATCH_TIME_LABEL]] + ':00', '%d/%m/%Y %H:%M:%S')
-        #         item['home'] = attributs[headers_indexes[MATCH_HOME]]
-        #         item['visitor'] = attributs[headers_indexes[MATCH_VISITOR]]
-        #         item['score_home'] = int(score[0])
-        #         item['score_visitor'] = int(score[1])
-        #         item['plan'] = gym_id
-        #
-        #         yield item
-        #
-        # content = response.css(CSS_CLASS_LINE_MATCH_2)
-        #
-        # for line in content:
-        #     if len(line.css(CSS_INFOS_COMPLEMENTAIRES)) == 0:
-        #         attributs = line.xpath(XPATH_TD_TEXT).getall()
-        #         gym_id = self.getGymId(line.css('.poplight').attrib["href"])
-        #
-        #         if attributs[headers_indexes[MATCH_RESULT]] != "-":
-        #             score = attributs[headers_indexes[MATCH_RESULT]].split(" - ")
-        #         else:
-        #             score = [0, 0]
-        #
-        #         yield {
-        #             ATTR_MATCH_CHAMPIONSHIP_ID: championship_id,
-        #             ATTR_MATCH_DAYS: int(attributs[headers_indexes[MATCH_DAY_LABEL]]),
-        #             ATTR_MATCH_DATE: datetime.strptime(attributs[headers_indexes[MATCH_DATE_LABEL]] + ' ' + attributs[
-        #                 headers_indexes[MATCH_TIME_LABEL]] + ':00',
-        #                                                '%d/%m/%Y %H:%M:%S'),
-        #             ATTR_MATCH_HOME: attributs[headers_indexes[MATCH_HOME]],
-        #             ATTR_MATCH_VISITOR: attributs[headers_indexes[MATCH_VISITOR]],
-        #             ATTR_MATCH_SCORE_HOME: int(score[0]),
-        #             ATTR_MATCH_SCORE_VISITOR: int(score[1]),
-        #             ATTR_MATCH_GYM: gym_id,
-        #         }
-
     def get_match_item(self, response: scrapy.http.Response, headers_indexes: dict[str, int], championship_id: str,
                        classCss: str) -> list[MatchItem]:
         """
