@@ -2,7 +2,7 @@ from datetime import datetime
 import json
 import re
 import scrapy
-from tutorial.items import TutorialItem
+from tutorial.items import MatchItem
 
 ATTR_MATCH_CHAMPIONSHIP_ID = 'ChampionnatId'
 
@@ -43,7 +43,7 @@ class ffbbSpiderMatchAll(scrapy.Spider):
 
         content = response.css('#idCompetitionsSelect option')
 
-        item = TutorialItem()
+        item = MatchItem()
 
         for i in range(len(content)):
             next_team = self.changerRencontresResultatsEquipe(content[i].attrib['value'])
@@ -56,8 +56,6 @@ class ffbbSpiderMatchAll(scrapy.Spider):
         headers = response.css('.titre-bloc td::text').getall()
         headersIndexes = self.getColumnsIndex(headers)
         championshipId = self.getChampionshipId(response)
-
-
 
         content = response.css(CSS_CLASS_LINE_MATCH_1)
 
@@ -103,6 +101,37 @@ class ffbbSpiderMatchAll(scrapy.Spider):
                     ATTR_MATCH_SCORE_VISITOR: int(score[1]),
                     ATTR_MATCH_GYM: gymId,
                 }
+    def getMatchItem(self, response, headersIndexes, championshipId, classCss):
+
+        items = []
+        content = response.css(classCss)
+
+        for line in content:
+            if len(line.css(CSS_INFOS_COMPLEMENTAIRES)) == 0:
+                item = MatchItem()
+                attributs = line.xpath(XPATH_TD_TEXT).getall()
+                gymId = self.getGymId(line.css('.poplight').attrib["href"])
+
+                if attributs[headersIndexes[MATCH_RESULT]] != "-":
+                    score = attributs[headersIndexes[MATCH_RESULT]].split(" - ")
+                else:
+                    score = [0, 0]
+
+                item['ATTR_MATCH_CHAMPIONSHIP_ID'] = championshipId
+                item['ATTR_MATCH_DAYS'] = int(attributs[headersIndexes[MATCH_DAY_LABEL]])
+                item['ATTR_MATCH_DATE'] = datetime.strptime(
+                        attributs[headersIndexes[MATCH_DATE_LABEL]] + ' ' + attributs[
+                        headersIndexes[MATCH_TIME_LABEL]] + ':00', '%d/%m/%Y %H:%M:%S')
+                item['ATTR_MATCH_HOME'] = attributs[headersIndexes[MATCH_HOME]]
+                item['ATTR_MATCH_VISITOR'] = attributs[headersIndexes[MATCH_VISITOR]]
+                item['ATTR_MATCH_SCORE_HOME'] = int(score[0])
+                item['ATTR_MATCH_SCORE_VISITOR'] = int(score[1])
+                item['ATTR_MATCH_GYM'] = gymId
+
+                items.append(item)
+
+        return items
+
 
     def getColumnsIndex(self, headers):
         headersIndexes = {}
