@@ -1,7 +1,8 @@
-from datetime import datetime
-import json
 import re
+from datetime import datetime
+
 import scrapy
+
 from ScrapyDjangoTest.items import MatchItem
 
 ATTR_MATCH_CHAMPIONSHIP_ID = 'ChampionnatId'
@@ -30,46 +31,52 @@ MATCH_HOME = 'Domicile'
 MATCH_VISITOR = 'Visiteur'
 MATCH_RESULT = 'Résultat'
 MATCH_GYM = 'Salle'
-
 DIVISION_FOLDER = "https://resultats.ffbb.com/championnat/equipe/division"
 DEFAULT_EXT = ".html"
 
 
 class ffbbSpiderMatchAll(scrapy.Spider):
     name = "ffbb_match_all"
-
     start_urls = ['https://resultats.ffbb.com/championnat/equipe/2263.html']
-
-    # def __init__(self, *args, **kwargs):
-    #     self.url = kwargs.get('url')
-    #     self.domain = kwargs.get('domain')
-    #     self.start_urls = [self.url]
-    #     self.allowed_domains = [self.domain]
+    response = ""
 
     def parse(self, response):
-
+        self.response = response
         content = response.css('#idCompetitionsSelect option')
 
         for i in range(len(content)):
             next_team = self.changerRencontresResultatsEquipe(content[i].attrib['value'])
             next_team = response.urljoin(next_team)
-            yield scrapy.Request(next_team, callback=self.parseMatches)
+            yield scrapy.Request(next_team, callback=self.parse_matches)
 
-    def parseMatches(self, response):
+    def parse_matches(self, response):
 
         # récupérer les numéros des colonnes des champs
         headers = response.css('.titre-bloc td::text').getall()
-        headersIndexes = self.getColumnsIndex(headers)
-        championshipId = self.getChampionshipId(response)
+        headers_indexes = self.get_columns_index(headers)
 
-        items = self.getMatchItem(response,headersIndexes,championshipId,CSS_CLASS_LINE_MATCH_1)
-        items.extend(self.getMatchItem(response, headersIndexes, championshipId, CSS_CLASS_LINE_MATCH_2))
+        # récupérer l'identifiant du championnat
+        championship_id = self.getChampionshipId(response)
 
+        # récupérer l'ensemble des matchItems paires
+        items = self.get_match_item(response, headers_indexes, championship_id, CSS_CLASS_LINE_MATCH_1)
+
+        # récupérer l'ensemble des matchItems impaires
+        items = self.get_match_item(response, headers_indexes, championship_id, CSS_CLASS_LINE_MATCH_2)
+
+        # enregistrer chaque matchItem
         for item in items:
-            yield(item)
+            yield item
 
-    def getMatchItem(self, response, headersIndexes, championshipId, classCss):
-
+    def get_match_item(self, response: scrapy.http.Response, headers_indexes: dict[str, int], championship_id: str,
+                       classCss: str) -> list[MatchItem]:
+        """
+        @param response: httpResponse
+        @param headers_indexes: headers
+        @param championship_id: id of the championship
+        @param classCss: name of the css class to track
+        @return: list of matchItems
+        """
         items = []
         content = response.css(classCss)
 
@@ -77,53 +84,53 @@ class ffbbSpiderMatchAll(scrapy.Spider):
             if len(line.css(CSS_INFOS_COMPLEMENTAIRES)) == 0:
                 item = MatchItem()
                 attributs = line.xpath(XPATH_TD_TEXT).getall()
-                gymId = self.getGymId(line.css('.poplight').attrib["href"])
+                gym_id = self.getGymId(line.css('.poplight').attrib["href"])
 
-                if attributs[headersIndexes[MATCH_RESULT]] != "-":
-                    score = attributs[headersIndexes[MATCH_RESULT]].split(" - ")
+                if attributs[headers_indexes[MATCH_RESULT]] != "-":
+                    score = attributs[headers_indexes[MATCH_RESULT]].split(" - ")
                 else:
                     score = [0, 0]
 
-                item['ATTR_MATCH_CHAMPIONSHIP_ID'] = championshipId
-                item['ATTR_MATCH_DAYS'] = int(attributs[headersIndexes[MATCH_DAY_LABEL]])
-                item['ATTR_MATCH_DATE'] = datetime.strptime(
-                        attributs[headersIndexes[MATCH_DATE_LABEL]] + ' ' + attributs[
-                        headersIndexes[MATCH_TIME_LABEL]] + ':00', '%d/%m/%Y %H:%M:%S')
-                item['ATTR_MATCH_HOME'] = attributs[headersIndexes[MATCH_HOME]]
-                item['ATTR_MATCH_VISITOR'] = attributs[headersIndexes[MATCH_VISITOR]]
-                item['ATTR_MATCH_SCORE_HOME'] = int(score[0])
-                item['ATTR_MATCH_SCORE_VISITOR'] = int(score[1])
-                item['ATTR_MATCH_GYM'] = gymId
+                item['championship'] = championship_id
+                item['day'] = int(attributs[headers_indexes[MATCH_DAY_LABEL]])
+                item['match_date'] = datetime.strptime(
+                    attributs[headers_indexes[MATCH_DATE_LABEL]] + ' ' + attributs[
+                        headers_indexes[MATCH_TIME_LABEL]] + ':00', '%d/%m/%Y %H:%M:%S')
+                item['home'] = attributs[headers_indexes[MATCH_HOME]]
+                item['visitor'] = attributs[headers_indexes[MATCH_VISITOR]]
+                item['score_home'] = int(score[0])
+                item['score_visitor'] = int(score[1])
+                item['plan'] = gym_id
 
                 items.append(item)
 
         return items
 
-    def getColumnsIndex(self, headers):
-        headersIndexes = {}
+    def get_columns_index(self, headers):
+        headers_indexes = {}
         for index in range(len(headers)):
             if headers[index] == MATCH_DAY_LABEL:
-                headersIndexes[MATCH_DAY_LABEL] = index
+                headers_indexes[MATCH_DAY_LABEL] = index
             elif headers[index] == MATCH_DATE_LABEL:
-                headersIndexes[MATCH_DATE_LABEL] = index
+                headers_indexes[MATCH_DATE_LABEL] = index
             elif headers[index] == MATCH_TIME_LABEL:
-                headersIndexes[MATCH_TIME_LABEL] = index
+                headers_indexes[MATCH_TIME_LABEL] = index
             elif headers[index] == MATCH_HOME:
-                headersIndexes[MATCH_HOME] = index
+                headers_indexes[MATCH_HOME] = index
             elif headers[index] == MATCH_VISITOR:
-                headersIndexes[MATCH_VISITOR] = index
+                headers_indexes[MATCH_VISITOR] = index
             elif headers[index] == MATCH_RESULT:
-                headersIndexes[MATCH_RESULT] = index
+                headers_indexes[MATCH_RESULT] = index
             elif headers[index] == MATCH_GYM:
-                headersIndexes[MATCH_GYM] = index
-        return headersIndexes
+                headers_indexes[MATCH_GYM] = index
+        return headers_indexes
 
     def changerRencontresResultatsEquipe(self, championshipIndex):
         return DIVISION_FOLDER + "/" + championshipIndex + DEFAULT_EXT
 
     def getGymId(self, string):
-        gymId = re.search(REGEX_WITHIN_SINGLE_QUOTE, string).group()
-        return gymId
+        gym_id = re.search(REGEX_WITHIN_SINGLE_QUOTE, string).group()
+        return gym_id
 
     def getChampionshipId(self, response):
         base = response.request.url
@@ -140,3 +147,4 @@ class ffbbSpiderMatchAll(scrapy.Spider):
     #     print(objet_json['longitude'])
     #
     #     self.gym = objet_json
+
