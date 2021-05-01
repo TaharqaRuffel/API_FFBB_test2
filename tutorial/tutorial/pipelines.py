@@ -23,6 +23,6 @@ class JsonWriterPipeline:
         self.file.close()
 
     def process_item(self, item, spider):
-        line = json.dumps(ItemAdapter(item).asdict()) + "\n"
+        line = json.dumps(ItemAdapter(item).get('championship')) + "\n"
         self.file.write(line)
         return item
