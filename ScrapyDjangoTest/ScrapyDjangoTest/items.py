@@ -5,7 +5,8 @@
 
 import scrapy
 from scrapy_djangoitem import DjangoItem
-from ScrapyDjangoTest.matches.models import Match
+
+from matches.models import Match
 
 
 class ScrapydjangotestItem(scrapy.Item):
