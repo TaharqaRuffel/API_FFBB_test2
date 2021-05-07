@@ -13,5 +13,6 @@ class Match(models.Model):
     score_visitor = models.SmallIntegerField(default=0)
     plan = models.CharField(max_length=100, null=True)
 
+
     class Meta:
         ordering = ['created']
