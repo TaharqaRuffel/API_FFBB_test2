@@ -36,90 +36,91 @@ class Snippet(models.Model):
         self.highlighted = highlight(self.code, lexer, formatter)
         super(Snippet, self).save(*args, **kwargs)
 
-
-class Place(models.Model):
-    code = models.CharField(max_length=100, primary_key=True)
+class Match(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
-    latitude = models.FloatField(null=True)
-    longitude = models.FloatField(null=True)
-    title = models.CharField(max_length=100)
-    address = models.CharField(max_length=255)
-    post_code = models.CharField(lengh=5)
-    city = models.CharField()
-
-
-class Member(models.Model):
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=10)
-    email = models.CharField(max_length=100)
-    address = models.ForeignKey('Place', on_delete=models.SET_NULL, null=True)
-
-
-class Organizer(models.Model):
-    title = models.CharField(max_length=100)
-    president = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True)
-    correspondent = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True)
-
-
-class Championship(models.Model):
-    code = models.CharField(max_length=100, primary_key=True)
-    title = models.CharField(max_length=100)
-    # pool = models.ForeignKey('Pool', on_delete=models.SET_NULL,null=True)
-    organizedBy = models.ForeignKey('Organizer', related_name='championships', on_delete=models.SET_NULL, null=True)
-
-
-class Pool(models.Model):
-    code = models.CharField(max_length=25, primary_key=True)
-    title = models.CharField(max_length=100)
-    championship = models.ForeignKey('Championship', related_name='pools', on_delete=models.SET_NULL, null=True)
-
-
-class Day(models.Model):
-    title = models.IntegerField
-    pool = models.ForeignKey(Championship, related_name='days', on_delete=models.SET_NULL, null=True)
-
-
-class Match(models.Model):
-    day = models.ForeignKey(Championship, related_name='matches', on_delete=models.SET_NULL, null=True)
+    championship = models.CharField(max_length=100)
+    day = models.IntegerField()
     match_date = models.DateTimeField()
-    home = models.ForeignKey('Team', related_name='matches', on_delete=models.SET_NULL, null=True)
-    visitor = models.ForeignKey('Team', related_name='matches', on_delete=models.SET_NULL, null=True)
+    home = models.CharField(max_length=100)
+    visitor = models.CharField(max_length=100)
     score_home = models.SmallIntegerField(default=0)
     score_visitor = models.SmallIntegerField(default=0)
-    gym = models.ForeignKey('Place', related_name='matches', on_delete=models.SET_NULL, null=True)
-
-    # class Match(models.Model):
-    #     created = models.DateTimeField(auto_now_add=True)
-    #     updated = models.DateTimeField(auto_now_add=True)
-    #     championship = models.CharField(max_length=100)
-    #     day = models.IntegerField()
-    #     match_date = models.DateTimeField()
-    #     home = models.CharField(max_length=100)
-    #     visitor = models.CharField(max_length=100)
-    #     score_home = models.SmallIntegerField(default=0)
-    #     score_visitor = models.SmallIntegerField(default=0)
-    #     plan = models.CharField(max_length=100, null=True)
-    #     # gym = models.ForeignKey('Gym', on_delete=models.SET_NULL,null=True)
-    #     owner = models.ForeignKey('auth.User', related_name='matches', on_delete=models.CASCADE)
+    plan = models.CharField(max_length=100, null=True)
+    # gym = models.ForeignKey('Gym', on_delete=models.SET_NULL,null=True)
+    owner = models.ForeignKey('auth.User', related_name='matches', on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['created']
 
-
-class Team(models.Model):
-    club = models.ForeignKey('Club', related_name='teams', on_delete=models.SET_NULL, null=True)
-
-
-class Club(models.Model):
-    code = models.CharField(max_length=10, primary_key=True)
-    phone = models.CharField(max_length=10)
-    fax = models.CharField(max_length=10)
-    couleur = models.CharField(max_length=15)
-    address = models.ForeignKey(Place, on_delete=models.SET_NULL, null=True)
-    gym = models.ForeignKey(Place, on_delete=models.SET_NULL)
-    ligue = models.ForeignKey(Place, related_name='clubs', on_delete=models.SET_NULL)
-    comite = models.ForeignKey(Place, related_name='comite', on_delete=models.SET_NULL)
-    president = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True)
-    correspondent = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True)
+#
+# class Place(models.Model):
+#     code = models.CharField(max_length=100, primary_key=True)
+#     created = models.DateTimeField(auto_now_add=True)
+#     updated = models.DateTimeField(auto_now_add=True)
+#     latitude = models.FloatField(null=True)
+#     longitude = models.FloatField(null=True)
+#     title = models.CharField(max_length=100)
+#     address = models.CharField(max_length=255)
+#     post_code = models.CharField(lengh=5)
+#     city = models.CharField()
+#
+#
+# class Member(models.Model):
+#     first_name = models.CharField(max_length=100)
+#     last_name = models.CharField(max_length=100)
+#     phone = models.CharField(max_length=10)
+#     email = models.CharField(max_length=100)
+#     address = models.ForeignKey('Place', on_delete=models.SET_NULL, null=True)
+#
+#
+# class Organizer(models.Model):
+#     title = models.CharField(max_length=100)
+#     president = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True)
+#     correspondent = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True)
+#
+#
+# class Championship(models.Model):
+#     code = models.CharField(max_length=100, primary_key=True)
+#     title = models.CharField(max_length=100)
+#     # pool = models.ForeignKey('Pool', on_delete=models.SET_NULL,null=True)
+#     organizedBy = models.ForeignKey('Organizer', related_name='championships', on_delete=models.SET_NULL, null=True)
+#
+#
+# class Pool(models.Model):
+#     code = models.CharField(max_length=25, primary_key=True)
+#     title = models.CharField(max_length=100)
+#     championship = models.ForeignKey('Championship', related_name='pools', on_delete=models.SET_NULL, null=True)
+#
+#
+# class Day(models.Model):
+#     title = models.IntegerField
+#     pool = models.ForeignKey(Championship, related_name='days', on_delete=models.SET_NULL, null=True)
+#
+#
+# class Match(models.Model):
+#     day = models.ForeignKey(Championship, related_name='matches', on_delete=models.SET_NULL, null=True)
+#     match_date = models.DateTimeField()
+#     home = models.ForeignKey('Team', related_name='matches', on_delete=models.SET_NULL, null=True)
+#     visitor = models.ForeignKey('Team', related_name='matches', on_delete=models.SET_NULL, null=True)
+#     score_home = models.SmallIntegerField(default=0)
+#     score_visitor = models.SmallIntegerField(default=0)
+#     gym = models.ForeignKey('Place', related_name='matches', on_delete=models.SET_NULL, null=True)
+#
+#
+#
+# class Team(models.Model):
+#     club = models.ForeignKey('Club', related_name='teams', on_delete=models.SET_NULL, null=True)
+#
+#
+# class Club(models.Model):
+#     code = models.CharField(max_length=10, primary_key=True)
+#     phone = models.CharField(max_length=10)
+#     fax = models.CharField(max_length=10)
+#     couleur = models.CharField(max_length=15)
+#     address = models.ForeignKey(Place, on_delete=models.SET_NULL, null=True)
+#     gym = models.ForeignKey(Place, on_delete=models.SET_NULL)
+#     ligue = models.ForeignKey(Place, related_name='clubs', on_delete=models.SET_NULL)
+#     comite = models.ForeignKey(Place, related_name='comite', on_delete=models.SET_NULL)
+#     president = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True)
+#     correspondent = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True)

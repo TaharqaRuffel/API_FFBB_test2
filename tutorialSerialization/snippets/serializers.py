@@ -20,7 +20,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'id', 'username', 'snippets']
 
 class MatchSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
+    #owner = serializers.ReadOnlyField(source='owner.username')
+    owner = serializers.HyperlinkedRelatedField( view_name='user-detail', read_only=True)
+
     #highlight = serializers.HyperlinkedModelSerializer(view_name='match-highlight', format='html')
     class Meta:
         model = Match
