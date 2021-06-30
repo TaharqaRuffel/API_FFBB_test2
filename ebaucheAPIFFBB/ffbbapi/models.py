@@ -77,11 +77,11 @@ class Pool(models.Model):
 
 class Day(models.Model):
     title = models.IntegerField
-    pool = models.ForeignKey(Championship, related_name='days', on_delete=models.SET_NULL, null=True)
+    pool = models.ForeignKey('Pool', related_name='days', on_delete=models.SET_NULL, null=True)
 
 
 class Match(models.Model):
-    day = models.ForeignKey(Championship, related_name='matches', on_delete=models.SET_NULL, null=True)
+    day = models.ForeignKey('Day', related_name='matches', on_delete=models.SET_NULL, null=True)
     match_date = models.DateTimeField()
     home = models.ForeignKey('Team', related_name='matches_home', on_delete=models.SET_NULL, null=True)
     visitor = models.ForeignKey('Team', related_name='matches_visitor', on_delete=models.SET_NULL, null=True)
