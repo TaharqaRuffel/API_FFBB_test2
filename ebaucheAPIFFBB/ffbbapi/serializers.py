@@ -13,7 +13,6 @@ class SnippetSerializer(serializers.HyperlinkedModelSerializer):
                   'title', 'code', 'linenos', 'language', 'style']
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    snippets = serializers.HyperlinkedRelatedField(many=True, view_name='snippet-detail', read_only=True)
 
     class Meta:
         model = User
