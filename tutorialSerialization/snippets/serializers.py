@@ -13,20 +13,18 @@ class SnippetSerializer(serializers.HyperlinkedModelSerializer):
                   'title', 'code', 'linenos', 'language', 'style']
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    snippets = serializers.HyperlinkedRelatedField(many=True, view_name='snippet-detail', read_only=True)
+    #snippets = serializers.HyperlinkedRelatedField(many=True, view_name='snippet-detail', read_only=True)
 
     class Meta:
         model = User
-        fields = ['url', 'id', 'username', 'snippets']
+        fields = ['url', 'id', 'username', 'ffbbapi']
 
-class MatchSerializer(serializers.ModelSerializer):
+class MatchSerializer(serializers.HyperlinkedModelSerializer):
     #owner = serializers.ReadOnlyField(source='owner.username')
     owner = serializers.HyperlinkedRelatedField( view_name='user-detail', read_only=True)
 
     #highlight = serializers.HyperlinkedModelSerializer(view_name='match-highlight', format='html')
     class Meta:
         model = Match
-        fields = ['url','id', 'championship', 'day', 'match_date', 'home', 'visitor', 'score_home', 'score_visitor', 'plan','owner']
-
-
-
+        #fields = ['url','id', 'championship', 'day', 'match_date', 'home', 'visitor', 'score_home', 'score_visitor', 'plan','owner']
+        fields = '__all__'

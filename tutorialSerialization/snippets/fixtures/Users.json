@@ -1,0 +1,8 @@
+[
+  {
+    "model": "ffbbapi.snippet",
+    "pk": 1,
+    'username': 'testUser2', 'email': 'test2@test.com', 'password': 'test'
+    }
+
+]

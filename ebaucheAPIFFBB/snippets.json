@@ -1,0 +1,13 @@
+{
+    "model": "ffbbapi.Snippet",
+    "pk": 1,
+    "fields": {
+        "title": "titre1",
+        "code": "test1",
+        "linenos": false,
+        "language": "python",
+        "style": "friendly",
+        "owner": "1",
+        "highlighted": "testhighligth"
+    }
+}

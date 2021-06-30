@@ -4,7 +4,7 @@ from snippets import views
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
-router.register(r'snippets', views.SnippetViewSet)
+router.register(r'ffbbapi', views.SnippetViewSet)
 router.register(r'matches', views.MatchViewSet)
 router.register(r'users', views.UserViewSet)
 

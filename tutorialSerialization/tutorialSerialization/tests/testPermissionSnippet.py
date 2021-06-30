@@ -24,7 +24,7 @@ class SnippetUrlTestCase(APITestCase):
 
     def test_get_all_snippets_OK_admin(self):
         """
-        Ensure superuser can view the list of snippets object.
+        Ensure superuser can view the list of ffbbapi object.
         """
         url = reverse(SNIPPET_LIST)
         self.client.login(username=self.admin.username, password=self.admin_plain_password)
@@ -33,7 +33,7 @@ class SnippetUrlTestCase(APITestCase):
 
     def test_get_all_snippets_OK_user(self):
         """
-        Ensure user can view the list of snippets object.
+        Ensure user can view the list of ffbbapi object.
         """
         url = reverse(SNIPPET_LIST)
         self.client.login(username=self.admin.username, password=self.admin_plain_password)
@@ -50,7 +50,7 @@ class SnippetUrlTestCase(APITestCase):
 
     def test_update_all_snippets_put_NOT_ALLOWED_admin(self):
         """
-        Ensure superuser cannot edit the list of snippets object.
+        Ensure superuser cannot edit the list of ffbbapi object.
         """
         url = reverse(SNIPPET_LIST)
         data = {'code': 'test5'}
@@ -60,7 +60,7 @@ class SnippetUrlTestCase(APITestCase):
 
     def test_update_all_snippets_put_NOT_ALLOWED_user(self):
         """
-        Ensure user cannot edit the list of snippets object.
+        Ensure user cannot edit the list of ffbbapi object.
         """
         url = reverse(SNIPPET_LIST)
         data = {'code': 'test5'}
@@ -70,7 +70,7 @@ class SnippetUrlTestCase(APITestCase):
 
     def test_update_all_snippets_put_FORBIDDEN_unauthenficated(self):
         """
-        Ensure unauthenticated user cannot edit the list of snippets object.
+        Ensure unauthenticated user cannot edit the list of ffbbapi object.
         """
         url = reverse(SNIPPET_LIST)
         data = {'code': 'test5'}
@@ -79,7 +79,7 @@ class SnippetUrlTestCase(APITestCase):
 
     def test_partial_update_all_snippets_put_NOT_ALLOWED_admin(self):
         """
-        Ensure superuser cannot edit the list of snippets object.
+        Ensure superuser cannot edit the list of ffbbapi object.
         """
         url = reverse(SNIPPET_LIST)
         data = {'code': 'test5'}
@@ -89,7 +89,7 @@ class SnippetUrlTestCase(APITestCase):
 
     def test_partial_update_all_snippets_put_NOT_ALLOWED_user(self):
         """
-        Ensure user cannot edit the list of snippets object.
+        Ensure user cannot edit the list of ffbbapi object.
         """
         url = reverse(SNIPPET_LIST)
         data = {'code': 'test5'}
@@ -99,7 +99,7 @@ class SnippetUrlTestCase(APITestCase):
 
     def test_partial_update_all_snippets_put_FORBIDDEN_unauthenficated(self):
         """
-        Ensure unauthenticated user cannot edit the list of snippets object.
+        Ensure unauthenticated user cannot edit the list of ffbbapi object.
         """
         url = reverse(SNIPPET_LIST)
         data = {'code': 'test5'}
@@ -147,7 +147,7 @@ class SnippetUrlTestCase(APITestCase):
 
     def test_get_snippet_test1_user(self):
         """
-        Ensure user can view the list of snippets object.
+        Ensure user can view the list of ffbbapi object.
         """
         idTest1 = self.snippet1.id
         url = reverse(SNIPPET_DETAIL, args=[idTest1])

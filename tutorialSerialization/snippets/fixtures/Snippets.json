@@ -1,0 +1,18 @@
+[
+  {
+    "model": "ffbbapi.snippet",
+    "pk": 1,
+    "fields.":{
+      "title": "Test1",
+      "code": "hello world"
+    }
+  },
+  {
+    "model": "ffbbapi.snippet",
+    "pk": 2,
+    "fields.":{
+      "title": "Test2",
+      "code": "please world"
+    }
+  }
+]
