@@ -3,8 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from ffbbapi.models import Match
-from ffbbapi.models import Snippet
+from ffbbapi.models import Snippet,Match,Championship
 from datetime import datetime
 
 
