@@ -44,8 +44,15 @@ class Place(models.Model):
     longitude = models.FloatField(null=True)
     title = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
-    post_code = models.CharField(max_length=5, validators=[RegexValidator(regex='^.{5}$', message='Length has to be 5', code='nomatch')])
+    post_code = models.CharField(max_length=5, validators=[
+        RegexValidator(regex='^.{5}$', message='Length has to be 5', code='nomatch')])
     city = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        super(Place, self).save(*args, **kwargs)
 
 
 class Member(models.Model):
@@ -55,11 +62,18 @@ class Member(models.Model):
     email = models.CharField(max_length=100)
     address = models.ForeignKey('Place', on_delete=models.SET_NULL, null=True)
 
+    def __str__(self):
+        return self.first_name
+
 
 class Organizer(models.Model):
     title = models.CharField(max_length=100)
     president = models.ForeignKey('Member', related_name="organizer_presidents", on_delete=models.SET_NULL, null=True)
-    correspondent = models.ForeignKey('Member', related_name="organizer_correspondents", on_delete=models.SET_NULL, null=True)
+    correspondent = models.ForeignKey('Member', related_name="organizer_correspondents", on_delete=models.SET_NULL,
+                                      null=True)
+
+    def __str__(self):
+        return self.title
 
 
 class Championship(models.Model):
@@ -68,16 +82,25 @@ class Championship(models.Model):
     # pool = models.ForeignKey('Pool', on_delete=models.SET_NULL,null=True)
     organizedBy = models.ForeignKey('Organizer', related_name='championships', on_delete=models.SET_NULL, null=True)
 
+    def __str__(self):
+        return self.title
+
 
 class Pool(models.Model):
     code = models.CharField(max_length=25, primary_key=True)
     title = models.CharField(max_length=100)
     championship = models.ForeignKey('Championship', related_name='pools', on_delete=models.SET_NULL, null=True)
 
+    def __str__(self):
+        return self.title
+
 
 class Day(models.Model):
     title = models.IntegerField
     pool = models.ForeignKey('Pool', related_name='days', on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.title
 
 
 class Match(models.Model):
@@ -107,17 +130,26 @@ class Match(models.Model):
 
 
 class Team(models.Model):
+    title = models.CharField(max_length=50, null=True)
     club = models.ForeignKey('Club', related_name='teams', on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.title
 
 
 class Club(models.Model):
     code = models.CharField(max_length=10, primary_key=True)
+    title = models.CharField(max_length=50, null=True)
     phone = models.CharField(max_length=10)
     fax = models.CharField(max_length=10)
     couleur = models.CharField(max_length=15)
     address = models.ForeignKey(Place, related_name='clubs_address', on_delete=models.SET_NULL, null=True)
     gym = models.ForeignKey(Place, related_name='clubs_gym', on_delete=models.SET_NULL, null=True)
-    ligue = models.ForeignKey(Place, related_name='clubs', on_delete=models.SET_NULL, null=True)
-    comite = models.ForeignKey(Place, related_name='comite', on_delete=models.SET_NULL, null=True)
+    ligue = models.ForeignKey(Organizer, related_name='clubs', on_delete=models.SET_NULL, null=True)
+    comite = models.ForeignKey(Organizer, related_name='comite', on_delete=models.SET_NULL, null=True)
     president = models.ForeignKey('Member', related_name='clubs_president', on_delete=models.SET_NULL, null=True)
-    correspondent = models.ForeignKey('Member', related_name='clubs_correspondent', on_delete=models.SET_NULL, null=True)
+    correspondent = models.ForeignKey('Member', related_name='clubs_correspondent', on_delete=models.SET_NULL,
+                                      null=True)
+
+    def __str__(self):
+        return self.title

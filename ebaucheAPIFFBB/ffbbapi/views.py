@@ -1,5 +1,6 @@
-from ffbbapi.models import Snippet, Match, Place, Member, Organizer, Pool, Day, Team, Club
-from ffbbapi.serializers import SnippetSerializer, MatchSerializer, UserSerializer,PlaceSerializer, MemberSerializer, OrganizerSerializer, PoolSerializer, DaySerializer, TeamSerializer, ClubSerializer
+from ffbbapi.models import Snippet, Match, Place, Member, Organizer, Pool, Day, Team, Club, Championship
+from ffbbapi.serializers import SnippetSerializer, MatchSerializer, UserSerializer,PlaceSerializer, MemberSerializer,\
+    OrganizerSerializer, PoolSerializer, DaySerializer, TeamSerializer, ClubSerializer,ChampionshipSerializer
 from ffbbapi.permissions import IsOwnerOrReadOnly
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view, action
@@ -48,58 +49,68 @@ class MatchViewSet(viewsets.ModelViewSet):
     """
     queryset = Match.objects.all()
     serializer_class = MatchSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-                          IsOwnerOrReadOnly]
-
-    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
-    def highlight(self, request, *args, **kwargs):
-        match = self.get_object()
-        return Response(match.highlighted)
+    # permission_classes = [
+    #     permissions.IsAuthenticatedOrReadOnly,
+    #     IsOwnerOrReadOnly
+    # ]
+    #
+    # @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
+    # def highlight(self, request, *args, **kwargs):
+    #     match = self.get_object()
+    #     return Response(match.highlighted)
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+         serializer.save()
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     """
     This viewset automatically provides `list` and `retrieve` actions.
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    def perform_create(self, serializer):
+         serializer.save()
     #permission_classes = [permissions.IsAdminUser]
 
 
-class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
+class PlaceViewSet(viewsets.ModelViewSet):
+    queryset = Place.objects.all()
     serializer_class = PlaceSerializer
 
+    def perform_create(self, serializer):
+        serializer.save()
 
-class MemberViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
+class MemberViewSet(viewsets.ModelViewSet):
+    queryset = Member.objects.all()
     serializer_class = MemberSerializer
 
 
-class OrganizerViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
+class OrganizerViewSet(viewsets.ModelViewSet):
+    queryset = Organizer.objects.all()
     serializer_class = OrganizerSerializer
 
 
-class PoolViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
+class PoolViewSet(viewsets.ModelViewSet):
+    queryset = Pool.objects.all()
     serializer_class = PoolSerializer
 
 
-class DayViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
+class DayViewSet(viewsets.ModelViewSet):
+    queryset = Day.objects.all()
     serializer_class = DaySerializer
 
 
-class TeamViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
+class TeamViewSet(viewsets.ModelViewSet):
+    queryset = Team.objects.all()
     serializer_class = TeamSerializer
 
 
-class ClubViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
+class ClubViewSet(viewsets.ModelViewSet):
+    queryset = Club.objects.all()
     serializer_class = ClubSerializer
+
+class ChampionshipViewSet(viewsets.ModelViewSet):
+    queryset = Championship.objects.all()
+    serializer_class = ChampionshipSerializer

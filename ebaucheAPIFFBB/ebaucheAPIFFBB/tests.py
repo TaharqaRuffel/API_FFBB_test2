@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from ffbbapi.models import Snippet,Match,Championship
+from ffbbapi.models import Snippet, Match, Championship, Pool, Day, Place, Club, Team
 from datetime import datetime
 
 
@@ -460,6 +460,7 @@ class UserUrlTestCase(APITestCase):
 MATCH_LIST = 'match-list'
 MATCH_DETAIL = 'match-detail'
 
+
 class MatchUrlTestCase(APITestCase):
     user = None
     admin = None
@@ -467,21 +468,48 @@ class MatchUrlTestCase(APITestCase):
     user_plain_password = "user"
     match1 = None
     match2 = None
+    championship1 = None
+    championship2 = None
 
     def setUp(self):
         self.user = User.objects.create_user('testUser', 'test@test.com', self.user_plain_password)
         self.admin = User.objects.create_superuser('admin', 'admin@admin.fr', self.admin_plain_password)
         self.date1 = datetime(2020, 10, 4, 9, 45, 0, 0)
         self.date2 = datetime(2020, 12, 6, 20, 30, 0, 0)
-        self.match1 = Match.objects.create(championship='b5e6211f1955b5e6212059fa2263', day=1,
-                                           match_date=self.date1, home='ATLANTIQUE BC NAZAIRIEN',
-                                           visitor='AS BRAINS BASKET',
-                                           score_home=43, score_visitor=45, plan='533001012747', owner=self.user)
-        self.match2 = Match.objects.create(championship='champ', day=3,
-                                           match_date=self.date2, home='home',
-                                           visitor='visiteur',
-                                           score_home=43, score_visitor=45, plan='533001012778', owner=self.admin)
-
+        self.championship1 = Championship(code='b5e6211f1955b5e6212059fa2263', title='championnat1').save()
+        self.championship2 = Championship(code='champ', title='championnat2').save()
+        self.pool = Pool(code='p1', title='Poule1', championship=self.championship1).save()
+        self.day1 = Day(1, self.pool).save()
+        self.day2 = Day(3, self.pool).save()
+        self.gym1 = Place(code='533001012747', latitude=564, longitude=15, title='Porcé', address='12 chemin de porcé',
+                          post_code='44600', city='Saint-Nazaire').save()
+        self.gym2 = Place(code='533001012778', latitude=4564, longitude=4564, title='test1', address='address test',
+                          post_code='44000', city='Nantes').save()
+        self.club1 = Club().save()
+        self.club2 = Club().save()
+        self.team1 = Team(club=self.club1).save()
+        self.team2 = Team(club=self.club2).save()
+        self.match1 = Match.objects.create(day=self.day1,
+                            match_date=self.date1, home=self.team1,
+                            visitor=self.team2,
+                            score_home=43, score_visitor=45, gym=self.gym1).save()
+        self.match2 = Match(day=self.day2,
+                            match_date=self.date2, home=self.team2,
+                            visitor=self.team1,
+                            score_home=43, score_visitor=45, gym=self.gym2).save()
+        print("[")
+        print(self.match1)
+        print(',')
+        print(self.match2)
+        print("]")
+        # self.match1 = Match.objects.create(championship=self.championship1, day=self.day1,
+        #                                    match_date=self.date1, home=self.team1,
+        #                                    visitor=self.team2,
+        #                                    score_home=43, score_visitor=45, plan=self.gym1, owner=self.user)
+        # self.match2 = Match.objects.create(championship=self.championship2, day=self.day2,
+        #                                    match_date=self.date2, home=self.team2,
+        #                                    visitor=self.team1,
+        #                                    score_home=43, score_visitor=45, plan=self.gym2, owner=self.admin)
 
     def test_get_all_matches_OK_admin(self):
         """
@@ -662,7 +690,6 @@ class MatchUrlTestCase(APITestCase):
         response = self.client.patch(url, data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-
     def test_update_match_test1_OK_admin(self):
         """
         Ensure superuser update view the match created by him.
@@ -695,7 +722,6 @@ class MatchUrlTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Match.objects.get(id=test1_id).day, test1_day)
         self.assertEqual(Match.objects.get(id=test1_id).championship, test1_championship)
-
 
     def test_update_match_test1_FORBIDDEN_unauthenficated(self):
         """
@@ -753,4 +779,3 @@ class MatchUrlTestCase(APITestCase):
         self.client.login(username=self.user.username, password=self.user_plain_password)
         response = self.client.patch(url, data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-

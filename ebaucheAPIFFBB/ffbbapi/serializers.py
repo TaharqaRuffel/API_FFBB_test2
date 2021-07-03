@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from ffbbapi.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES, Match, Place, Member, Organizer, Pool, Day, Team, Club
+from ffbbapi.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES, Match, Place, Member, Organizer, Pool, Day, Team, \
+    Club, Championship
 from django.contrib.auth.models import User
 
 
@@ -12,57 +13,70 @@ class SnippetSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'id', 'highlight', 'owner',
                   'title', 'code', 'linenos', 'language', 'style']
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
 
+class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ['url', 'id', 'username', 'snippets']
 
-class MatchSerializer(serializers.HyperlinkedModelSerializer):
 
+class MatchSerializer(serializers.HyperlinkedModelSerializer):
+    #day =serializers.HyperlinkedModelSerializer(view_name='day', format='html')
     class Meta:
         model = Match
-        #fields = ['url','id', 'championship', 'day', 'match_date', 'home', 'visitor', 'score_home', 'score_visitor', 'plan']
+        # fields = ['url','id', 'championship', 'day', 'match_date', 'home', 'visitor', 'score_home', 'score_visitor', 'plan']
         fields = '__all__'
 
-class PlaceSerializer(serializers.HyperlinkedModelSerializer):
 
+class PlaceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Place
         fields = '__all__'
 
-class MemberSerializer(serializers.HyperlinkedModelSerializer):
 
+class MemberSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Member
         fields = '__all__'
 
-class OrganizerSerializer(serializers.HyperlinkedModelSerializer):
 
+class OrganizerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Organizer
         fields = '__all__'
 
-class PoolSerializer(serializers.HyperlinkedModelSerializer):
 
+class PoolSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Pool
         fields = '__all__'
 
-class DaySerializer(serializers.HyperlinkedModelSerializer):
 
+class DaySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Day
         fields = '__all__'
 
-class TeamSerializer(serializers.HyperlinkedModelSerializer):
 
+class TeamSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Team
         fields = '__all__'
 
-class ClubSerializer(serializers.HyperlinkedModelSerializer):
 
+class ClubSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Club
+        fields = '__all__'
+
+
+class PoolSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Pool
+        fields = '__all__'
+
+
+class ChampionshipSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Championship
         fields = '__all__'
